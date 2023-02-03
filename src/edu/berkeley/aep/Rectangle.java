@@ -3,12 +3,21 @@ package edu.berkeley.aep;
 //Understands a four-sided polygon at right angles
 public class Rectangle {
 
-    private int length;
-    private int width;
+    private final int length;
+    private final int width;
 
+
+    //Factory method-> static-> returns a new object
+    public static Rectangle createSquare(int side){
+        return new Rectangle(side,side);
+    }
     public Rectangle(int length, int width) {
         this.length = length;
         this.width = width;
+    }
+
+    public Rectangle(int side) {
+        this(side,side);
     }
 
     public int area(){
