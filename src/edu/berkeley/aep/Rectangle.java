@@ -7,7 +7,7 @@ public class Rectangle {
     private final int width;
 
 
-    //Factory method-> static-> returns a new object
+    //Factory method-> static-> returns a new object which has only one instance
     public static Rectangle createSquare(int side){
         return new Rectangle(side,side);
     }
