@@ -14,14 +14,5 @@ public class ArithmeticQuantity extends ScaledQuantity {
     }
 
 
-    public static ScaledQuantity best(ScaledQuantity... quantities){
-        if (quantities.length==0) throw new RuntimeException("Empty List!");
-        ScaledQuantity bestQuantity = quantities[0];
-        for (ScaledQuantity quantity: quantities){
-            if (quantity.betterThan(bestQuantity)){
-                bestQuantity=quantity;
-            }
-        }
-        return bestQuantity;
-    }
+
 }

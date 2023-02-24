@@ -1,6 +1,6 @@
 package edu.berkeley.aep;
 
-public class ScaledQuantity {
+public class ScaledQuantity implements Bestable<ScaledQuantity> {
     protected final int magnitude;
     protected final Unit unit;
 
@@ -25,6 +25,7 @@ public class ScaledQuantity {
         return new ArithmeticQuantity(this.unit.convertTo(unit, magnitude), unit);
     }
 
+    @Override
     public boolean betterThan(ScaledQuantity other){
         return this.magnitude>other.convertTo(unit).magnitude;
     }

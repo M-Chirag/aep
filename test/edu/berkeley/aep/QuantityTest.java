@@ -88,13 +88,5 @@ public class QuantityTest {
         assertEquals(thirtyTwoFahrenheit, zeroCelsius);
     }
 
-    @Test
-    public void FiveOzBetterThanThreeTbpsAnd5Tbps(){
-        var ThreeTbsp = new ScaledQuantity(3, Unit.TBSP);
-        var FiveTbsp = new ScaledQuantity(5, Unit.TBSP);
-        var FiveOz = new ScaledQuantity(5, Unit.OZ);
 
-        assertEquals(FiveOz, ArithmeticQuantity.best(ThreeTbsp,FiveTbsp,FiveOz));
-
-    }
 }

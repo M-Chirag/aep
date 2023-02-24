@@ -3,7 +3,7 @@ package edu.berkeley.aep;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class Chance {
+public class Chance implements Bestable<Chance> {
 
     private final BigDecimal probability;
 
@@ -22,6 +22,11 @@ public class Chance {
 
     public Chance or(Chance other) {
         return new Chance(other.probability.add(this.probability).subtract(other.probability.multiply(this.probability)));
+    }
+
+    @Override
+    public boolean betterThan(Chance other){
+        return this.probability.compareTo(other.probability)>=0;
     }
     @Override
     public String toString() {
