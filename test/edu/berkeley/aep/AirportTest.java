@@ -19,9 +19,9 @@ public class AirportTest {
         h.addNeighbor(b);
         b.addNeighbor(a);
         b.addNeighbor(c);
-        c.addNeighbor(e);
-        a.addNeighbor(f);
         c.addNeighbor(d);
+        a.addNeighbor(f);
+        c.addNeighbor(e);
         e.addNeighbor(b);
         d.addNeighbor(e);
     }
@@ -49,7 +49,7 @@ public class AirportTest {
 
     @Test
     public void numberOfHopsToCFromHShouldBeTwo(){
-        assertEquals(h.numOfAirports(d), 3);
+        assertEquals(c.numOfHops(b), 2);
     }
 
 }

@@ -5,6 +5,8 @@ import java.util.*;
 // understands the connections between Airports
 public class Airport {
 
+    public static final int UNREACHABLE = -1;
+
     private final String name;
     private final List<Airport> neighbors;
     public Airport(String name) {
@@ -31,11 +33,6 @@ public class Airport {
         return dfs(this, destination, null,visit);
     }
 
-    public int numOfAirports(Airport destination) {
-        Set<Airport> visit = new HashSet<>();
-        return dfsHelper(this, destination, null,visit);
-    }
-
 
     private boolean dfs(Airport curr, Airport target, Airport parent, Set<Airport> visit) {
         if (curr == target) {
@@ -52,19 +49,38 @@ public class Airport {
         return false;
     }
 
-    private int dfsHelper(Airport curr, Airport target, Airport parent, Set<Airport> visit) {
+    public int numOfHops(Airport destination) {
+        Set<Airport> visit = new HashSet<>();
+        visit.add(this);
+        int minHops = Integer.MAX_VALUE;
+        int hops = dfsHelper(this, destination, visit);
+        if (hops >= 0 && hops < minHops) {
+            minHops = hops;
+        }
+        return minHops == Integer.MAX_VALUE ? -1 : minHops;
+    }
+
+    private int dfsHelper(Airport curr, Airport target, Set<Airport> visit) {
         if (curr == target) {
             return 0;
         }
-        for (Airport neighbor: curr.neighbors) {
-            if (neighbor != parent && visit.add(neighbor) ) {
-                int hops = dfsHelper(neighbor, target, curr, visit);
-                if (hops>=0) {
-                    return hops+1;
+        int minNeighborHops = Integer.MAX_VALUE;
+        for (Airport neighbor : curr.neighbors) {
+            if (!visit.contains(neighbor)) {
+                visit.add(neighbor);
+                int hops = dfsHelper(neighbor, target, visit);
+                if (hops >= 0 && hops + 1 < minNeighborHops) {
+                    minNeighborHops = hops + 1;
                 }
+                visit.remove(neighbor);
             }
         }
-        return -1;
+
+        if (minNeighborHops == Integer.MAX_VALUE) {
+            return UNREACHABLE;
+        } else {
+            return minNeighborHops;
+        }
     }
 
     public void addNeighbor(Airport other){
