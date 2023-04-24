@@ -11,7 +11,7 @@ public class ChanceTest {
     @Test
     public void notOfCoinTossShouldBeACoinToss(){
         Chance chance = new Chance(BigDecimal.valueOf(0.5));
-        Chance chanceNot = new Chance(BigDecimal.valueOf(0.4));
+        Chance chanceNot = new Chance(BigDecimal.valueOf(0.5));
 
         assertEquals(chanceNot, chance.not());
     }
