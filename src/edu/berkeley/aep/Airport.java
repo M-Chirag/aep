@@ -1,98 +1,82 @@
 package edu.berkeley.aep;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-// understands the connections between Airports
 public class Airport {
 
-    public static final int UNREACHABLE = -1;
+    public static final int AIRPORT_UNREACHABLE = -1;
+    List<Airport> neighbors = new ArrayList<>();
 
-    private final String name;
-    private final List<Airport> neighbors;
-    public Airport(String name) {
-        this.name = name;
-        neighbors = new ArrayList<Airport>();
+    List<Route> routes = new ArrayList<>();
+
+    public boolean canReach(Airport other) {
+        return canReach(other, new HashSet<>());
     }
 
-    public Airport(String name, List<Airport> neighbors){
-        this.name = name;
-        this.neighbors = Collections.unmodifiableList(neighbors);
-    }
-    public boolean reachTo(Airport other) {
-        if(this.neighbors.contains(other) || this.equals(other)){
-            return true;
-        }
-        for(Airport neighbor: neighbors){
-            reachTo(neighbor);
+    public boolean canReach(Airport other, Set<Airport> visited) {
+        if (other == this) return true;
+        if (!visited.add(this)) return false;
+        for (var airport: neighbors) {
+            if (airport.canReach(other, visited)) return true;
         }
         return false;
     }
 
-    public boolean isReachable(Airport destination) {
-        Set<Airport> visit = new HashSet<>();
-        return dfs(this, destination, null,visit);
+    public void addRoute(Airport destination, Integer cost) {
+        neighbors.add(destination);
+        routes.add(new Route(destination, cost));
     }
 
-
-    private boolean dfs(Airport curr, Airport target, Airport parent, Set<Airport> visit) {
-        if (curr == target) {
-            return true;
-        }
-        for (Airport neighbor: curr.neighbors) {
-            if (neighbor != parent && visit.add(neighbor) ) {
-                boolean reached = dfs(neighbor, target, curr, visit);
-                if (reached) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public int hopsTo(Airport to) {
+        return hopsTo(to, new HashSet<>());
     }
 
-    public int numOfHops(Airport destination) {
-        Set<Airport> visit = new HashSet<>();
-        visit.add(this);
-        int minHops = Integer.MAX_VALUE;
-        int hops = dfsHelper(this, destination, visit);
-        if (hops >= 0 && hops < minHops) {
-            minHops = hops;
-        }
-        return minHops == Integer.MAX_VALUE ? -1 : minHops;
-    }
-
-    private int dfsHelper(Airport curr, Airport target, Set<Airport> visit) {
-        if (curr == target) {
+    public int hopsTo(Airport to, Set<Airport> visited) {
+        if (to.equals(this)) {
             return 0;
         }
-        int minNeighborHops = Integer.MAX_VALUE;
-        for (Airport neighbor : curr.neighbors) {
-            if (!visit.contains(neighbor)) {
-                visit.add(neighbor);
-                int hops = dfsHelper(neighbor, target, visit);
-                if (hops >= 0 && hops + 1 < minNeighborHops) {
-                    minNeighborHops = hops + 1;
-                }
-                visit.remove(neighbor);
+        if (!visited.add(this)) {
+            return AIRPORT_UNREACHABLE;
+        }
+        int minHops = Integer.MAX_VALUE;
+        for (Airport next: neighbors) {
+            int hops = next.hopsTo(to, new HashSet<>(visited));
+            if (hops != AIRPORT_UNREACHABLE && hops < minHops) {
+                minHops = hops;
+            }
+        }
+        if (minHops < Integer.MAX_VALUE) {
+            return minHops + 1;
+        }
+        return AIRPORT_UNREACHABLE;
+    }
+
+    public int costTo(Airport destination){
+        return costTo(destination, new HashSet<>());
+    }
+
+    int costTo(Airport destination, Set<Airport> visited) {
+        if (destination.equals(this)) {
+            return 0;
+        }
+        if (!visited.add(this)) {
+            return AIRPORT_UNREACHABLE;
+        }
+        int minCost = Integer.MAX_VALUE;
+        for (Route next: routes) {
+            int cost = next.costTo(destination, new HashSet<>(visited));
+
+            if (cost != AIRPORT_UNREACHABLE && cost < minCost) {
+                minCost = cost;
             }
         }
 
-        if (minNeighborHops == Integer.MAX_VALUE) {
-            return UNREACHABLE;
-        } else {
-            return minNeighborHops;
+        if (minCost < Integer.MAX_VALUE) {
+            return minCost;
         }
-    }
-
-    public void addNeighbor(Airport other){
-        this.neighbors.add(other);
-    }
-
-    @Override
-    public String toString() {
-        return "Airport{" +
-                "name='" + name + '\'' +
-                ", neighbors=" + neighbors +
-                '}';
+        return AIRPORT_UNREACHABLE;
     }
 }
-

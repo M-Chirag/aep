@@ -6,50 +6,69 @@ import static org.junit.Assert.*;
 
 public class AirportTest {
 
-    static Airport a = new Airport("a");
-    static Airport b = new Airport("b");
-    static Airport c = new Airport("c");
-    static Airport d = new Airport("d");
-    static Airport h = new Airport("h");
-    static Airport e = new Airport("e");
-    static Airport f = new Airport("f");
-    static Airport g = new Airport("g");
+    static Airport a = new Airport();
+    static Airport b = new Airport();
+    static Airport c = new Airport();
+    static Airport d = new Airport();
+    static Airport e = new Airport();
+    static Airport f = new Airport();
+    static Airport g = new Airport();
+    static Airport h = new Airport();
 
-    static{
-        h.addNeighbor(b);
-        b.addNeighbor(a);
-        b.addNeighbor(c);
-        c.addNeighbor(d);
-        a.addNeighbor(f);
-        c.addNeighbor(e);
-        e.addNeighbor(b);
-        d.addNeighbor(e);
+    static {
+        h.addRoute(b, 87);
+        b.addRoute(a,179 );
+        a.addRoute(f,  72);
+        b.addRoute(c, 402);
+        c.addRoute(d, 126);
+        c.addRoute(e, 749);
+        c.addRoute(e, 320);
+        d.addRoute(e, 79);
+        e.addRoute(b, 312);
     }
 
     @Test
-    public void hShouldReachItself(){
-        Airport a = new Airport("a");
-        assertTrue(a.reachTo(a));
+    public void airportShouldBeAbleToReachItself() {
+        assertTrue(a.canReach(a));
     }
 
     @Test
-    public void bCanReachC() {
-        Airport a = new Airport("a");
-        Airport c = new Airport("c");
-        Airport b = new Airport("b");
-        b.addNeighbor(a);
-        b.addNeighbor(c);
-        assertTrue(b.reachTo(c));
-    }
-    @Test
-    public void hCanReachC() {
-        assertTrue(h.isReachable(e));
-        assertFalse(h.isReachable(g));
+    public void airportShouldBeAbleToReachChild() {
+        assertTrue(h.canReach(b));
     }
 
     @Test
-    public void numberOfHopsToCFromHShouldBeTwo(){
-        assertEquals(c.numOfHops(b), 2);
+    public void airportShouldNotBeAbleToReachUnconnectedAirport() {
+        assertFalse(h.canReach(g));
     }
 
+    @Test
+    public void hopsFromBToCShouldBe1() {
+        assertEquals(1, b.hopsTo(c));
+    }
+
+    @Test
+    public void hopsFromBToDShouldBe2() {
+        assertEquals(2, b.hopsTo(d));
+    }
+
+    @Test
+    public void hopsFromBToEShouldBe2() {
+        assertEquals(2, b.hopsTo(e));
+    }
+
+    @Test
+    public void hopsFromCToBShouldBe2() {
+        assertEquals(2, c.hopsTo(b));
+    }
+
+    @Test
+    public void minimumCostOfBtoEIs517(){
+        assertEquals(517, c.costTo(b));
+    }
+
+    @Test
+    public void minimumCostOfHtoEIs694(){
+        assertEquals(694, h.costTo(e));
+    }
 }
