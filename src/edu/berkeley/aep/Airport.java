@@ -32,13 +32,13 @@ public class Airport {
     }
 
     public int hopsTo(Airport to) {
-        return costTo(to, new HashSet<>(), false);
+        return costTo(to, new HashSet<>(), Route.HOPS_STRATEGY);
     }
 
     public int costTo(Airport destination){
-        return costTo(destination, new HashSet<>(), true);
+        return costTo(destination, new HashSet<>(), Route.COST_STRATEGY);
     }
-    int costTo(Airport to, Set<Airport> visited, boolean calculateCost) {
+    int costTo(Airport to, Set<Airport> visited, RouteStrategy strategy) {
         if (to.equals(this)) {
             return 0;
         }
@@ -47,7 +47,7 @@ public class Airport {
         }
         int minCost = Integer.MAX_VALUE;
         for (Route next: routes) {
-            int cost = next.costTo(to, new HashSet<>(visited), calculateCost);
+            int cost = next.costTo(to, new HashSet<>(visited), strategy);
             if (cost != AIRPORT_UNREACHABLE && cost < minCost) {
                 minCost = cost;
             }

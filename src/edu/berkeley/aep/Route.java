@@ -14,13 +14,25 @@ public class Route {
         this.cost = cost;
     }
 
-    Integer costTo(Airport destination, HashSet<Airport> visited, boolean calculateCost) {
-        int costFromNextToDestination = next.costTo(destination, visited, calculateCost);
+    Integer costTo(Airport destination, HashSet<Airport> visited, RouteStrategy strategy) {
+        int costFromNextToDestination = next.costTo(destination, visited, strategy);
         if(Airport.AIRPORT_UNREACHABLE == costFromNextToDestination){
             return Airport.AIRPORT_UNREACHABLE;
         }
-        int myCost = calculateCost? cost:1;
-        return costFromNextToDestination+myCost;
+        return costFromNextToDestination+strategy.cost(this);
     }
+    static RouteStrategy HOPS_STRATEGY = new RouteStrategy() {
+        @Override
+        public int cost(Route route) {
+            return 1;
+        }
+    };
+
+    static RouteStrategy COST_STRATEGY = new RouteStrategy() {
+        @Override
+        public int cost(Route route) {
+            return route.cost;
+        }
+    };
 }
 
