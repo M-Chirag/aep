@@ -14,12 +14,13 @@ public class Route {
         this.cost = cost;
     }
 
-    Integer costTo(Airport destination, HashSet<Airport> airports) {
-        int costFromNextToDestination = next.costTo(destination, airports);
+    Integer costTo(Airport destination, HashSet<Airport> visited, boolean calculateCost) {
+        int costFromNextToDestination = next.costTo(destination, visited, calculateCost);
         if(Airport.AIRPORT_UNREACHABLE == costFromNextToDestination){
             return Airport.AIRPORT_UNREACHABLE;
         }
-        return costFromNextToDestination+cost;
+        int myCost = calculateCost? cost:1;
+        return costFromNextToDestination+myCost;
     }
 }
 

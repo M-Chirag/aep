@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+//Understands how to get your destination
 public class Airport {
 
     public static final int AIRPORT_UNREACHABLE = -1;
@@ -31,35 +32,14 @@ public class Airport {
     }
 
     public int hopsTo(Airport to) {
-        return hopsTo(to, new HashSet<>());
-    }
-
-    public int hopsTo(Airport to, Set<Airport> visited) {
-        if (to.equals(this)) {
-            return 0;
-        }
-        if (!visited.add(this)) {
-            return AIRPORT_UNREACHABLE;
-        }
-        int minHops = Integer.MAX_VALUE;
-        for (Airport next: neighbors) {
-            int hops = next.hopsTo(to, new HashSet<>(visited));
-            if (hops != AIRPORT_UNREACHABLE && hops < minHops) {
-                minHops = hops;
-            }
-        }
-        if (minHops < Integer.MAX_VALUE) {
-            return minHops + 1;
-        }
-        return AIRPORT_UNREACHABLE;
+        return costTo(to, new HashSet<>(), false);
     }
 
     public int costTo(Airport destination){
-        return costTo(destination, new HashSet<>());
+        return costTo(destination, new HashSet<>(), true);
     }
-
-    int costTo(Airport destination, Set<Airport> visited) {
-        if (destination.equals(this)) {
+    int costTo(Airport to, Set<Airport> visited, boolean calculateCost) {
+        if (to.equals(this)) {
             return 0;
         }
         if (!visited.add(this)) {
@@ -67,8 +47,7 @@ public class Airport {
         }
         int minCost = Integer.MAX_VALUE;
         for (Route next: routes) {
-            int cost = next.costTo(destination, new HashSet<>(visited));
-
+            int cost = next.costTo(to, new HashSet<>(visited), calculateCost);
             if (cost != AIRPORT_UNREACHABLE && cost < minCost) {
                 minCost = cost;
             }
